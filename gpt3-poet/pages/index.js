@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
 import { useState } from "react";
 
@@ -8,6 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const [userInput, setUserInput] = useState("");
   const [output, setOutput] = useState("");
+
   return (
     <>
       <Head>
@@ -17,7 +17,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="w-full h-screen flex flex-col justify-center items-center">
-        <h1 className="text-3xl font-bold text-center">Gpt3 Poet</h1>
+        <h1 className="text-3xl font-bold text-center">gpt3 poet</h1>
         <div className="max-w-2xl mx-auto">
           <form
             onSubmit={(e) => {
@@ -35,24 +35,17 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="px-4 py-3 font-semibold rounded-lg bg-black text-white"
+              className="px-3 py-2 font-semibold rounded-lg bg-black text-white"
             >
               Submit
             </button>
           </form>
-          <div className="text-lg ">
-            Touching grass, it's a feeling so sublime, As I feel the blades
-            running through my fingers' rhyme. This is what I love, the warmth
-            of the sun, The gentle breeze, I can't help but run. Frolicking, I
-            laugh while I explore, The grassy meadow, I just can't ignore. The
-            softness of the ground, I can't deny, The sweetness of the air, it's
-            a lullaby. The aroma, it's a scent so divine, It's like a melody, so
-            sweet and sublime.
-          </div>
+          <div className="text-lg whitespace-pre-line">{output}</div>
         </div>
       </main>
     </>
   );
+
   async function generatePoem() {
     const response = await fetch("/api/generate-poem", {
       method: "POST",
@@ -63,5 +56,13 @@ export default function Home() {
         input: userInput,
       }),
     });
+
+    const data = await response.json();
+
+    if (data.poem) {
+      setOutput(data.poem);
+    }
+
+    setUserInput("");
   }
 }
