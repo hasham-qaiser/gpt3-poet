@@ -1,10 +1,13 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
+import { useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [userInput, setUserInput] = useState("");
+  const [output, setOutput] = useState("");
   return (
     <>
       <Head>
@@ -16,8 +19,16 @@ export default function Home() {
       <main className="w-full h-screen flex flex-col justify-center items-center">
         <h1 className="text-3xl font-bold text-center">Gpt3 Poet</h1>
         <div className="max-w-2xl mx-auto">
-          <form className="flex flex-row gap-x-4 my-8 justify-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              generatePoem();
+            }}
+            className="flex flex-row gap-x-4 my-8 justify-center"
+          >
             <input
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
               className="px-3 py-2 text-lg rounded-lg border-2"
               type="text"
               placeholder="Subject matter"
@@ -36,13 +47,21 @@ export default function Home() {
             laugh while I explore, The grassy meadow, I just can't ignore. The
             softness of the ground, I can't deny, The sweetness of the air, it's
             a lullaby. The aroma, it's a scent so divine, It's like a melody, so
-            sweet and sublime. The colors so vibrant, I'm in awe, A moment of
-            beauty, I'm feeling no flaw. I'm glad I can feel the grass so green,
-            It brings me peace, a feeling so serene. A moment of joy, I won't
-            soon forget, Touching grass, it's a feeling I won't regret.
+            sweet and sublime.
           </div>
         </div>
       </main>
     </>
   );
+  async function generatePoem() {
+    const response = await fetch("/api/generate-poem", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        input: userInput,
+      }),
+    });
+  }
 }
